@@ -84,8 +84,8 @@ Try the exercises in [EXERCISES.md](EXERCISES.md) first.
 The worked example uses the licorice gargle trial (Ruetzler et al.,
 *Anesth Analg* 2013;117:614–21) as distributed in the
 [`medicaldata`](https://github.com/higgi13425/medicaldata) R package (MIT
-licence), contributed by Amy S. Nowacki. The "client" is fictional.
+license), contributed by Amy S. Nowacki. The "client" is fictional.
 
-## Licence
+## License
 
 MIT.

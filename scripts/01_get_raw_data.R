@@ -4,7 +4,7 @@
 # and never edited. If you do re-run it, 02_make_analysis_data.R will refuse
 # to proceed unless the bytes match the checksum in data/raw/README.md.
 #
-# Source: medicaldata R package (MIT licence), dataset contributed by
+# Source: medicaldata R package (MIT license), dataset contributed by
 # Amy S. Nowacki, "Licorice Gargle Dataset", TSHS Resources Portal (2017),
 # from Ruetzler et al., Anesth Analg 2013;117:614-21.
 
