@@ -14,8 +14,7 @@
     ],
     "deny": [
       "Read(./data/phi/**)",
-      "Edit(./data/raw/**)",
-      "Write(./data/raw/**)"
+      "Edit(./data/raw/**)"
     ]
   },
   "hooks": {
