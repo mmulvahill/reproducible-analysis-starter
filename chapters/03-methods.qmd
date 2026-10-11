@@ -1,0 +1,37 @@
+# Analysis plan
+
+This chapter was written before any outcome was examined. Changes after that
+point are logged in the decision record with a reason.
+
+## Estimands
+
+| Question | Population | Outcome | Summary measure |
+|---|---|---|---|
+| Primary | All randomized patients with an outcome | Any sore throat at rest, thirty minutes | Odds ratio, licorice vs sugar |
+| Secondary | Same | Any sore throat at each of four assessments | Population-averaged odds ratio |
+
+## Models
+
+1. **First look (sanity check).** Proportions by arm and an unadjusted
+   logistic regression at thirty minutes. Randomization makes this the
+   primary analysis as well (D-002).
+2. **Repeated measures, population-averaged.** Logistic GEE with an
+   exchangeable working correlation and robust standard errors; treatment
+   and assessment time as covariates (D-003).
+3. **Repeated measures, patient-level.** Logistic mixed model with a random
+   intercept per patient. Reported beside the GEE because its odds ratio
+   answers a different question (D-004).
+4. **Sensitivity.** The primary model adjusted for sex, age, BMI, smoking,
+   ASA status and surgery size.
+
+## Verification before trusting a model
+
+Each model function must recover a known effect from simulated data with
+the same structure before it is run on the trial data
+(`tests/testthat/test-models.R`).
+
+## Reporting
+
+Odds ratios with 95% CI from Wald intervals; p-values to three decimals.
+Secondary results are descriptive; no multiplicity adjustment is planned
+because there is a single primary comparison.

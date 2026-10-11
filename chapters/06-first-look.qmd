@@ -1,0 +1,33 @@
+# First look: thirty minutes
+
+```{r}
+#| include: false
+source(here::here("chapters", "_setup.R"))
+by30 <- pain_by_group(clean, "pain_30min")
+or30 <- odds_ratio(fit_single_timepoint(clean))
+adj <- stats::glm(
+  I(pain_30min > 0) ~ treatment + sex + age + bmi + smoking + asa + surgery_size,
+  family = stats::binomial(),
+  data = clean
+)
+or_adj <- odds_ratio(adj)
+```
+
+Before fitting anything complex, check the simplest version of the answer.
+
+```{r}
+#| label: tbl-30min
+#| tbl-cap: "Any sore throat at rest, thirty minutes after arrival in recovery."
+knitr::kable(
+  transform(by30, proportion = fmt_pct(proportion)),
+  col.names = c("Arm", "Patients", "With sore throat", "Proportion")
+)
+```
+
+Sore throat at thirty minutes was less common with licorice
+(`r fmt_pct(by30$proportion[by30$group == "Licorice"])` vs
+`r fmt_pct(by30$proportion[by30$group == "Sugar"])`; `r fmt_or(or30)`;
+`r fmt_p(or30$p_value)`). This is the pre-specified primary analysis (D-002).
+
+**Sensitivity.** Adjusting for baseline covariates gives a similar estimate
+(`r fmt_or(or_adj)`), as expected under randomization.

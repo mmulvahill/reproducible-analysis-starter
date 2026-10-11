@@ -1,0 +1,72 @@
+# CLAUDE.md
+
+Instructions for Claude Code in this repository. Read this first; it is the
+standard of work for the project, written for an AI assistant and a new
+analyst alike.
+
+## What this project is
+
+A statistical consulting analysis (worked example: the licorice gargle
+trial). The Quarto book is both the lab notebook and the client report.
+
+```
+data/raw/        received data. READ-ONLY. Never edit, never overwrite.
+data/derived/    built by `make data` from raw. Not committed.
+R/               every function the analysis uses (an R package)
+tests/testthat/  tests for those functions
+scripts/         numbered data scripts and project checks
+chapters/        the Quarto book; index.qmd is the summary
+DECISIONS.md     every analysis decision, with reasons
+RESEARCH_LOG.md  append-only log of what happened and what we learned
+```
+
+## Commands
+
+```bash
+make data      # raw -> derived (refuses if raw data changed)
+make test      # unit tests, known-answer tests, simulation recovery
+make lint      # lintr over R/, tests/, scripts/, chapters/
+make numbers   # refuses typed numbers in report prose
+make book      # render the Quarto book to _book/
+make all       # everything above, in order
+```
+
+## Rules
+
+1. **Never type a number into report prose.** Every number in a `.qmd`
+   comes from inline R, e.g. `` `r fmt_pct(x)` ``. `make numbers` enforces
+   this, and a hook runs it after every edit.
+2. **Raw data is read-only.** All changes happen in code, from raw to
+   derived. A new delivery is a new file plus a DECISIONS.md entry.
+3. **Logic lives in `R/`, with tests.** Chapters call functions; they do not
+   contain long analysis code.
+4. **Write the prose after seeing the numbers.** Never describe a result you
+   have not computed in this session.
+5. **Log decisions.** Any choice about outcomes, models, exclusions,
+   covariates or missing data gets a DECISIONS.md entry (`/log-decision`).
+   Notable findings and surprises go in RESEARCH_LOG.md (`/log-research`).
+6. **Ask before changing the plan.** The primary outcome, primary model and
+   estimands in `chapters/03-methods.qmd` are the PI's decisions. Propose;
+   do not change them silently.
+7. **Verify, then claim.** Run `make all` before saying work is done, and
+   report what actually passed. Never say tests pass without running them.
+8. **New model function → simulation-recovery test.** It must recover a
+   known effect from simulated data with the same structure.
+9. **Bug fix → a test that fails without the fix.** Revert the fix, show the
+   test failing, restore it.
+10. **No identifiable data.** Never read `data/phi/`. Work with synthetic or
+    de-identified data unless the project's data agreement allows otherwise.
+
+## Statistical conventions
+
+- Report effect sizes with 95% CIs; p-values to three decimals.
+- Name the estimand: conditional (mixed model) vs marginal (GEE) odds
+  ratios answer different questions.
+- Randomized comparisons: unadjusted primary analysis, adjusted as
+  sensitivity. Do not choose covariates by looking at Table 1.
+- Warnings from model fits are findings. Do not suppress them.
+
+## Style
+
+tidyverse style, snake_case, lines under 100 characters. Comments say why,
+not what.

@@ -1,0 +1,17 @@
+# Reproducing this report
+
+From a fresh clone:
+
+```bash
+make all   # data -> tests -> lint -> prose-number check -> render
+```
+
+The rendered book is published by `.github/workflows/publish.yml` on every
+push to `main`, so the public version always matches the committed code.
+
+## Software environment at render time
+
+```{r}
+#| code-fold: false
+sessionInfo()
+```

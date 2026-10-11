@@ -1,0 +1,18 @@
+# Cautions
+
+Things that could make a correct-looking analysis wrong. Read before
+interpreting results.
+
+- **Two odds ratios, two questions.** A random-intercept model gives an
+  odds ratio for a given patient; a GEE gives one for the population. With
+  large between-patient variation they can differ a lot. Neither is wrong;
+  report the one that matches the question and say which it is.
+- **Dichotomizing a pain score discards information.** "Any pain" matches
+  the trial's primary outcome, but an ordinal model of the full score is a
+  reasonable secondary analysis.
+- **"Cleaned" data is a claim, not a guarantee.** The source says the data
+  have no problems; the pipeline still validates every range and code.
+- **Covariate imbalance after randomization is chance.** Do not choose
+  adjustment covariates by looking at Table 1.
+- **One trial, one site.** Results describe this population of thoracic
+  surgery patients with double-lumen tubes.

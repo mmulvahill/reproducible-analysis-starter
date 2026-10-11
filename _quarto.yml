@@ -1,0 +1,42 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Licorice Gargle Trial: Analysis Notebook and Report"
+  subtitle: "Worked example from reproducible-analysis-starter"
+  author: "Matt Mulvahill"
+  date: today
+  repo-url: https://github.com/mmulvahill/reproducible-analysis-starter
+  repo-actions: [source, issue]
+  chapters:
+    - index.qmd
+    - part: "Plan"
+      chapters:
+        - chapters/01-question.qmd
+        - chapters/02-data.qmd
+        - chapters/03-methods.qmd
+        - chapters/04-cautions.qmd
+    - part: "Results"
+      chapters:
+        - chapters/05-describe.qmd
+        - chapters/06-first-look.qmd
+        - chapters/07-repeated.qmd
+    - part: "Record"
+      chapters:
+        - chapters/08-decisions.qmd
+        - chapters/09-research-log.qmd
+        - chapters/10-reproducibility.qmd
+
+format:
+  html:
+    theme: cosmo
+    code-fold: true
+    code-summary: "Show code"
+    toc: true
+
+execute:
+  echo: true
+  warning: true
+  message: false
+  freeze: false
