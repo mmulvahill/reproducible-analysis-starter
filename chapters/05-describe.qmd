@@ -6,8 +6,8 @@ source(here::here("chapters", "_setup.R"))
 n_arm <- table(clean$treatment)
 ```
 
-The trial randomized `r sum(n_arm)` patients: `r n_arm[["Sugar"]]` to sugar
-water and `r n_arm[["Licorice"]]` to licorice.
+The public dataset includes `r sum(n_arm)` randomized patients: `r n_arm[["Sugar"]]` to
+sugar water and `r n_arm[["Licorice"]]` to licorice.
 
 ```{r}
 #| label: tbl-baseline
@@ -15,7 +15,8 @@ water and `r n_arm[["Licorice"]]` to licorice.
 t1 <- table_one(
   clean,
   by = "treatment",
-  vars = c("age", "sex", "bmi", "asa", "mallampati", "smoking", "surgery_size")
+  vars = c("age", "sex", "bmi", "asa", "mallampati", "smoking", "preop_pain",
+           "surgery_size")
 )
 knitr::kable(t1, col.names = c("Variable", "Level", "Sugar", "Licorice"))
 ```

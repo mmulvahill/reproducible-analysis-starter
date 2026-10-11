@@ -28,7 +28,8 @@ jobs:
         with:
           dependencies: '"all"'
       - uses: quarto-dev/quarto-actions/setup@v2
-      - run: make data
+      # Never publish a book whose checks fail.
+      - run: make data test lint numbers
       - run: quarto render
       - uses: actions/upload-pages-artifact@v3
         with:

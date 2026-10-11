@@ -49,8 +49,10 @@ automatically. The project also sets up:
   the review in a *fresh* session so the reviewer did not write the work).
 - **A hook** that runs the typed-number check after every file edit and shows
   Claude any violation.
-- **Permission rules** that stop Claude editing `data/raw/` or reading
-  `data/phi/`.
+- **Permission rules** that block Claude's file tools from editing
+  `data/raw/` or reading `data/phi/`. These are guardrails, not a security
+  boundary: a shell command could still reach those files. Keep identifiable
+  data off any machine or account not approved for it.
 
 ## Using it with Claude in a browser
 
@@ -58,6 +60,12 @@ No Claude Code yet? Create a Project on claude.ai and paste `CLAUDE.md` into
 its instructions. You lose the hooks and the automatic test runs, so run
 `make all` yourself before trusting anything. **Do not paste identifiable
 patient data into a personal account.**
+
+## Pinning package versions
+
+`chapters/10-reproducibility.qmd` records `sessionInfo()`, which says what
+was used but cannot restore it. For your own project, run `renv::init()`
+once, commit `renv.lock`, and have collaborators run `renv::restore()`.
 
 ## Starting your own project
 

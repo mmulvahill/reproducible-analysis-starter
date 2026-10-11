@@ -29,5 +29,10 @@ Sore throat at thirty minutes was less common with licorice
 `r fmt_pct(by30$proportion[by30$group == "Sugar"])`; `r fmt_or(or30)`;
 `r fmt_p(or30$p_value)`). This is the pre-specified primary analysis (D-002).
 
-**Sensitivity.** Adjusting for baseline covariates gives a similar estimate
-(`r fmt_or(or_adj)`), as expected under randomization.
+**Sensitivity.** Adjusting for baseline covariates gives `r fmt_or(or_adj)`.
+This is a conditional odds ratio, so it is expected to sit somewhat further
+from one than the unadjusted estimate even with perfect balance
+(non-collapsibility; Chapter 4). The two agree on direction and size, and
+the adjusted interval is not a test of the unadjusted one. Preoperative pain
+is not adjusted for: only
+`r sum(clean$preop_pain == "Yes")` patients had any.

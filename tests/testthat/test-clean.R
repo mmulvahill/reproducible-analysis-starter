@@ -26,6 +26,7 @@ test_that("clean_licorice labels codes exactly as the codebook says", {
   expect_equal(as.character(clean$sex), c("Male", "Female", "Female"))
   expect_equal(as.character(clean$smoking), c("Current", "Past", "Never"))
   expect_equal(as.character(clean$surgery_size), c("Small", "Medium", "Large"))
+  expect_equal(as.character(clean$preop_pain), c("No", "No", "Yes"))
   expect_equal(clean$pain_30min, c(0, 3, NA))
 })
 

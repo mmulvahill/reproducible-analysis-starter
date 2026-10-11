@@ -8,7 +8,7 @@ point are logged in the decision record with a reason.
 | Question | Population | Outcome | Summary measure |
 |---|---|---|---|
 | Primary | All randomized patients with an outcome | Any sore throat at rest, thirty minutes | Odds ratio, licorice vs sugar |
-| Secondary | Same | Any sore throat at each of four assessments | Population-averaged odds ratio |
+| Secondary | Same | Any sore throat across the four assessments | Population-averaged odds ratio, common and at each assessment |
 
 ## Models
 
@@ -16,13 +16,17 @@ point are logged in the decision record with a reason.
    logistic regression at thirty minutes. Randomization makes this the
    primary analysis as well (D-002).
 2. **Repeated measures, population-averaged.** Logistic GEE with an
-   exchangeable working correlation and robust standard errors; treatment
-   and assessment time as covariates (D-003).
+   exchangeable working correlation and robust standard errors. A common
+   odds ratio across assessments, and a treatment-by-time model for the odds
+   ratio at each assessment (D-003).
 3. **Repeated measures, patient-level.** Logistic mixed model with a random
-   intercept per patient. Reported beside the GEE because its odds ratio
-   answers a different question (D-004).
+   intercept per patient, fitted by adaptive quadrature. Reported beside the
+   GEE because its odds ratio answers a different question (D-004).
 4. **Sensitivity.** The primary model adjusted for sex, age, BMI, smoking,
-   ASA status and surgery size.
+   ASA status and surgery size. Interpreted as a conditional odds ratio, not
+   a check of the unadjusted one.
+5. **Missing outcomes.** Complete case, with best- and worst-case bounds
+   (D-006).
 
 ## Verification before trusting a model
 

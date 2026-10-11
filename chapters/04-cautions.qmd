@@ -8,10 +8,17 @@ interpreting results.
   large between-patient variation they can differ a lot. Neither is wrong;
   report the one that matches the question and say which it is.
 - **Dichotomizing a pain score discards information.** "Any pain" matches
-  the trial's primary outcome, but an ordinal model of the full score is a
+  the client's stated outcome, but an ordinal model of the full score is a
   reasonable secondary analysis.
 - **"Cleaned" data is a claim, not a guarantee.** The source says the data
   have no problems; the pipeline still validates every range and code.
+- **Odds ratios are non-collapsible.** Adjusting for a prognostic covariate
+  moves an odds ratio away from one even with perfect balance, because the
+  adjusted model answers a conditional question. A shift after adjustment is
+  not evidence of confounding.
+- **A common odds ratio is an assumption.** The single GEE odds ratio
+  assumes the effect is the same at every assessment; the time-specific
+  model checks it.
 - **Covariate imbalance after randomization is chance.** Do not choose
   adjustment covariates by looking at Table 1.
 - **One trial, one site.** Results describe this population of thoracic

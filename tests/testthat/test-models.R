@@ -44,6 +44,58 @@ test_that("with patient clustering the marginal OR is closer to 1", {
   expect_lt(abs(marginal), 0.85 * abs(conditional))
 })
 
+test_that("fit_marginal recovers the true marginal OR when patients cluster", {
+  # The marginal truth is not the simulation's conditional log OR: integrate
+  # the patient random effect out at each time, then average over times.
+  sd_patient <- 2
+  baseline <- c(0.5, 0, -0.5, -1)
+  conditional <- -0.8
+  marginal_p <- function(eta) {
+    stats::integrate(
+      function(u) stats::plogis(eta + u) * stats::dnorm(u, 0, sd_patient),
+      -Inf, Inf
+    )$value
+  }
+  true_log_or <- mean(vapply(baseline, function(b) {
+    stats::qlogis(marginal_p(b + conditional)) - stats::qlogis(marginal_p(b))
+  }, numeric(1)))
+
+  # n is large enough that a conditional estimate (about -0.8) would fail.
+  sim <- simulate_repeated(n_patients = 3000, log_or_treatment = conditional,
+                           baseline_logits = baseline,
+                           sd_patient = sd_patient, seed = 5)
+  est <- odds_ratio(fit_marginal(sim))
+  expect_lt(abs(est$log_or - true_log_or), 3 * est$se)
+})
+
+test_that("time-specific GEE odds ratios equal the per-time 2x2 odds ratios", {
+  # With a saturated mean model the GEE point estimates reproduce the
+  # observed proportions, so each time's OR is the simple 2x2 OR.
+  sim <- simulate_repeated(n_patients = 300, seed = 9)
+  by_time <- odds_ratio_by_time(fit_marginal_by_time(sim))
+  for (t in levels(sim$time)) {
+    d <- sim[sim$time == t, ]
+    p <- tapply(d$any_pain, d$treatment, mean)
+    two_by_two <- (p[["Licorice"]] / (1 - p[["Licorice"]])) /
+      (p[["Sugar"]] / (1 - p[["Sugar"]]))
+    expect_equal(by_time$or[by_time$time == t], two_by_two, tolerance = 1e-4)
+  }
+})
+
+test_that("missing-outcome bounds bracket the complete-case estimate", {
+  d <- data.frame(
+    treatment = factor(rep(c("Sugar", "Licorice"), each = 50),
+                       levels = c("Sugar", "Licorice")),
+    pain_30min = c(rep(1, 30), rep(0, 19), NA, rep(1, 15), rep(0, 34), NA)
+  )
+  b <- missing_outcome_bounds(d)
+  expect_equal(b$scenario,
+               c("Complete case", "Best case for licorice", "Worst case for licorice"))
+  expect_lt(b$or[2], b$or[1])
+  expect_gt(b$or[3], b$or[1])
+  expect_equal(b$n_obs, c(98, 100, 100))
+})
+
 test_that("odds_ratio matches the textbook 2x2 calculation for a glm", {
   # 2x2: Sugar 30/50 with pain, Licorice 15/50. OR = (15/35) / (30/20).
   d <- data.frame(

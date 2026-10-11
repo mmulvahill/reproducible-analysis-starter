@@ -69,6 +69,9 @@ clean_licorice <- function(raw) {
     smoking = recode_factor(
       raw$preOp_smoking, 1:3, c("Current", "Past", "Never"), "preOp_smoking"
     ),
+    preop_pain = recode_factor(
+      raw$preOp_pain, c(0, 1), c("No", "Yes"), "preOp_pain"
+    ),
     surgery_size = recode_factor(
       raw$intraOp_surgerySize, 1:3, c("Small", "Medium", "Large"),
       "intraOp_surgerySize"

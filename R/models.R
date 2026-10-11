@@ -15,10 +15,13 @@ fit_single_timepoint <- function(clean, outcome = "pain_30min") {
 #' conditional (patient-level) odds ratio, reported alongside the marginal
 #' model to show how the estimand changes the number (DECISIONS.md D-004).
 fit_repeated <- function(long) {
+  # Adaptive quadrature, not the Laplace default: with a large patient SD
+  # and four binary observations per patient, Laplace is biased.
   lme4::glmer(
     any_pain ~ treatment + time + (1 | patient_id),
     family = stats::binomial(),
-    data = long
+    data = long,
+    nAGQ = 25
   )
 }
 
@@ -34,6 +37,62 @@ fit_marginal <- function(long) {
     family = stats::binomial(),
     corstr = "exchangeable",
     data = long
+  )
+}
+
+#' Population-averaged model with a treatment-by-time interaction, so the
+#' odds ratio can differ at each assessment (does the effect last?).
+fit_marginal_by_time <- function(long) {
+  long <- long[order(long$patient_id, long$time), ]
+  geepack::geeglm(
+    any_pain ~ treatment * time,
+    id = patient_id,
+    family = stats::binomial(),
+    corstr = "exchangeable",
+    data = long
+  )
+}
+
+#' Treatment odds ratio at each assessment from `fit_marginal_by_time()`,
+#' with robust Wald 95% CIs.
+odds_ratio_by_time <- function(fit, treatment_term = "treatmentLicorice") {
+  b <- stats::coef(fit)
+  v <- stats::vcov(fit)
+  times <- levels(fit$data$time)
+  rows <- lapply(times, function(t) {
+    w <- stats::setNames(numeric(length(b)), names(b))
+    w[treatment_term] <- 1
+    interaction <- paste0(treatment_term, ":time", t)
+    if (interaction %in% names(b)) w[interaction] <- 1
+    est <- sum(w * b)
+    se <- sqrt(drop(t(w) %*% v %*% w))
+    data.frame(
+      time = t,
+      or = exp(est),
+      lower = exp(est - stats::qnorm(0.975) * se),
+      upper = exp(est + stats::qnorm(0.975) * se)
+    )
+  })
+  do.call(rbind, rows)
+}
+
+#' Best- and worst-case bounds for patients with a missing outcome
+#'
+#' Refits the single-time-point model with every missing outcome set to the
+#' value least and most favourable to licorice. If both bounds agree with the
+#' complete-case result, the missing data cannot change the conclusion.
+missing_outcome_bounds <- function(clean, outcome = "pain_30min") {
+  miss <- is.na(clean[[outcome]])
+  scenario <- function(licorice_value, sugar_value) {
+    d <- clean
+    d[[outcome]][miss & d$treatment == "Licorice"] <- licorice_value
+    d[[outcome]][miss & d$treatment == "Sugar"] <- sugar_value
+    odds_ratio(fit_single_timepoint(d, outcome))
+  }
+  rbind(
+    cbind(scenario = "Complete case", odds_ratio(fit_single_timepoint(clean, outcome))),
+    cbind(scenario = "Best case for licorice", scenario(0, 1)),
+    cbind(scenario = "Worst case for licorice", scenario(1, 0))
   )
 }
 

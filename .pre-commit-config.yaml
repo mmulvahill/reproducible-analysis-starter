@@ -23,8 +23,12 @@ repos:
         files: '^(R|tests)/.*\.R$'
         pass_filenames: false
       - id: raw-data-read-only
-        name: raw data is read-only
-        entry: raw data files may not be modified; save a new file instead
-        language: fail
+        name: raw data is read-only (new files are fine; edits are not)
+        entry: >-
+          bash -c 'changed=$(git diff --cached --name-only --diff-filter=MDR
+          -- data/raw ":!data/raw/README.md");
+          if [ -n "$changed" ]; then echo "Raw data may not be modified:";
+          echo "$changed"; exit 1; fi'
+        language: system
         files: '^data/raw/'
-        exclude: '^data/raw/README\.md$'
+        pass_filenames: false

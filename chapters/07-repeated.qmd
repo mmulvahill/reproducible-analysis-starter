@@ -7,6 +7,9 @@ fit_gee <- fit_marginal(long)
 fit_glmm <- fit_repeated(long)
 or_marginal <- odds_ratio(fit_gee)
 or_conditional <- odds_ratio(fit_glmm)
+by_time <- odds_ratio_by_time(fit_marginal_by_time(long))
+# Claims in the prose are computed too, so they cannot outlive the data.
+lasts <- all(by_time$upper < 1)
 sd_patient <- attr(lme4::VarCorr(fit_glmm)$patient_id, "stddev")[[1]]
 ```
 
@@ -24,18 +27,44 @@ ggplot2::ggplot(props, ggplot2::aes(time, any_pain, colour = treatment, group = 
   ggplot2::theme_minimal()
 ```
 
-## Population-averaged effect (secondary estimand)
+## Does the effect last?
 
-Averaged over the four assessments, licorice lowered the odds of sore throat
-in the trial population (`r fmt_or(or_marginal)`; `r fmt_p(or_marginal$p_value)`;
-GEE, D-003).
+The odds ratio at each assessment, from a GEE with a treatment-by-time
+interaction (D-003):
+
+```{r}
+#| label: tbl-by-time
+#| tbl-cap: "Population-averaged odds ratio, licorice vs sugar, at each assessment (robust 95% CI)."
+knitr::kable(
+  data.frame(
+    Assessment = by_time$time,
+    `Odds ratio (95% CI)` = fmt_or_cell(by_time$or, by_time$lower, by_time$upper),
+    check.names = FALSE
+  )
+)
+```
+
+`r if (lasts) "The benefit persists to the first post-operative morning:" else "The benefit is not clear at every assessment:"`
+odds ratios range from `r fmt_num(min(by_time$or), 2)` to
+`r fmt_num(max(by_time$or), 2)`, and
+`r if (lasts) "every" else "not every"` confidence interval excludes one
+(largest upper limit `r fmt_num(max(by_time$upper), 2)`).
+
+## One summary across assessments
+
+Assuming a common odds ratio across the four assessments, licorice lowered
+the odds of sore throat in the trial population (`r fmt_or(or_marginal)`;
+`r fmt_p(or_marginal$p_value)`; GEE, D-003). The table above is the check on
+that assumption.
 
 ## Why the mixed model gives a different number
 
 The random-intercept model estimates `r fmt_or(or_conditional)`, much further
 from one. This is not a contradiction. The estimated between-patient standard
 deviation on the log-odds scale is `r fmt_num(sd_patient, 2)`, so some
-patients are far more prone to sore throat than others. The mixed model's
+patients are far more prone to sore throat than others. (Fitted by
+adaptive quadrature; the Laplace default is biased in this setting.) The
+mixed model's
 odds ratio compares the same patient under each gargle; the GEE's compares
 the two populations. The client's question is about populations, so the GEE
 is the reported estimand (D-004).
