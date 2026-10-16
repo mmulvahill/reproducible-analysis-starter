@@ -11,10 +11,10 @@ trial). The Quarto book is both the lab notebook and the client report.
 
 ```
 data/raw/        received data. READ-ONLY. Never edit, never overwrite.
-data/derived/    built by `make data` from raw. Not committed.
+data/derived/    built by `make data` and `make results`. Not committed.
 R/               every function the analysis uses (an R package)
 tests/testthat/  tests for those functions
-scripts/         numbered data scripts and project checks
+scripts/         numbered pipeline scripts (02 data, 03 models) and checks
 chapters/        the Quarto book; index.qmd is the summary
 DECISIONS.md     every analysis decision, with reasons
 RESEARCH_LOG.md  append-only log of what happened and what we learned
@@ -24,6 +24,7 @@ RESEARCH_LOG.md  append-only log of what happened and what we learned
 
 ```bash
 make data      # raw -> derived (refuses if raw data changed)
+make results   # fit every model once -> data/derived/results.rds
 make test      # unit tests, known-answer tests, simulation recovery
 make lint      # lintr over R/, tests/, scripts/, chapters/
 make numbers   # refuses typed numbers in report prose
@@ -35,11 +36,15 @@ make all       # everything above, in order
 
 1. **Never type a number into report prose.** Every number in a `.qmd`
    comes from inline R, e.g. `` `r fmt_pct(x)` ``. `make numbers` enforces
-   this, and a hook runs it after every edit.
+   this, and a hook runs it after every edit. Never get past the check by
+   marking a line `numbers-ok` or by wrapping a typed literal in inline R;
+   compute the number, or ask.
 2. **Raw data is read-only.** All changes happen in code, from raw to
    derived. A new delivery is a new file plus a DECISIONS.md entry.
-3. **Logic lives in `R/`, with tests.** Chapters call functions; they do not
-   contain long analysis code.
+3. **Logic lives in `R/`, with tests. Fit each model once.** Every model is
+   fitted in `analysis_results()` (`R/results.R`), run by `make results`.
+   Chapters and `index.qmd` read `results` and format it; they never fit
+   models or define them inline.
 4. **Write the prose after seeing the numbers.** Never describe a result you
    have not computed in this session.
 5. **Log decisions.** Any choice about outcomes, models, exclusions,
@@ -47,13 +52,15 @@ make all       # everything above, in order
    Notable findings and surprises go in RESEARCH_LOG.md (`/log-research`).
 6. **Ask before changing the plan.** The primary outcome, primary model and
    estimands in `chapters/03-methods.qmd` are the PI's decisions. Propose;
-   do not change them silently.
+   do not change them silently. If results have already been seen, say so:
+   a change made after seeing results must be logged as post hoc.
 7. **Verify, then claim.** Run `make all` before saying work is done, and
    report what actually passed. Never say tests pass without running them.
 8. **New model function → simulation-recovery test.** It must recover a
    known effect from simulated data with the same structure.
 9. **Bug fix → a test that fails without the fix.** Revert the fix, show the
-   test failing, restore it.
+   test failing, restore it. Never delete or weaken a test to make a change
+   pass; if a test fixture needs a new column, add it.
 10. **No identifiable data.** Never read `data/phi/`. Work with synthetic or
     de-identified data unless the project's data agreement allows otherwise.
 

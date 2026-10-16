@@ -3,14 +3,13 @@
 ```{r}
 #| include: false
 source(here::here("chapters", "_setup.R"))
-fit_gee <- fit_marginal(long)
-fit_glmm <- fit_repeated(long)
-or_marginal <- odds_ratio(fit_gee)
-or_conditional <- odds_ratio(fit_glmm)
-by_time <- odds_ratio_by_time(fit_marginal_by_time(long))
-# Claims in the prose are computed too, so they cannot outlive the data.
-lasts <- all(by_time$upper < 1)
-sd_patient <- attr(lme4::VarCorr(fit_glmm)$patient_id, "stddev")[[1]]
+# Fitted once by scripts/03_fit_models.R (R/results.R). Claims in the prose,
+# like whether the effect lasts, are computed there too.
+or_marginal <- results$or_marginal
+or_conditional <- results$or_conditional
+by_time <- results$by_time
+lasts <- results$lasts
+sd_patient <- results$sd_patient
 ```
 
 ## Proportion with sore throat over time
@@ -68,6 +67,15 @@ mixed model's
 odds ratio compares the same patient under each gargle; the GEE's compares
 the two populations. The client's question is about populations, so the GEE
 is the reported estimand (D-004).
+
+```{r}
+#| echo: false
+#| results: asis
+fit_warnings_note(
+  results,
+  c("GEE, common OR", "GEE, OR at each assessment", "Mixed model")
+)
+```
 
 ::: {.callout-warning}
 ## Where an AI assistant can go wrong here

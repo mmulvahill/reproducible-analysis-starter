@@ -3,7 +3,7 @@
 From a fresh clone:
 
 ```bash
-make all   # data -> tests -> lint -> prose-number check -> render
+make all   # data -> models -> tests -> lint -> prose-number check -> render
 ```
 
 The rendered book is published by `.github/workflows/publish.yml` on every

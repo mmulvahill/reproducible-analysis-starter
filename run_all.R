@@ -7,6 +7,7 @@ step <- function(label, expr) {
 }
 
 step("Build analysis data", source("scripts/02_make_analysis_data.R"))
+step("Fit models", source("scripts/03_fit_models.R"))
 step("Tests", testthat::test_local(stop_on_failure = TRUE))
 
 lint_status <- step("Lint", system2("Rscript", "scripts/lint.R"))

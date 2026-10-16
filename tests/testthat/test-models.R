@@ -12,8 +12,7 @@ test_that("fit_repeated recovers a known treatment effect and patient SD", {
   expect_gt(est$upper, exp(truth))
   # Check the clustering too, not only the coefficient we care about: a model
   # that ignores patients can still land near the treatment effect.
-  sd_hat <- attr(lme4::VarCorr(fit)$patient_id, "stddev")[[1]]
-  expect_lt(abs(sd_hat - 2), 0.5)
+  expect_lt(abs(patient_sd(fit) - 2), 0.5)
 })
 
 test_that("fit_repeated finds no effect when there is none", {
@@ -94,6 +93,45 @@ test_that("missing-outcome bounds bracket the complete-case estimate", {
   expect_lt(b$or[2], b$or[1])
   expect_gt(b$or[3], b$or[1])
   expect_equal(b$n_obs, c(98, 100, 100))
+})
+
+test_that("bounds reuse the complete-case result instead of refitting", {
+  d <- data.frame(
+    treatment = factor(rep(c("Sugar", "Licorice"), each = 50),
+                       levels = c("Sugar", "Licorice")),
+    pain_30min = c(rep(1, 30), rep(0, 19), NA, rep(1, 15), rep(0, 34), NA)
+  )
+  primary <- odds_ratio(fit_single_timepoint(d))
+  expect_equal(missing_outcome_bounds(d), missing_outcome_bounds(d, complete_case = primary))
+  # Whatever is passed in is what the table reports.
+  marker <- transform(primary, or = 99)
+  expect_equal(missing_outcome_bounds(d, complete_case = marker)$or[1], 99)
+})
+
+test_that("the adjusted model is the glm the analysis plan describes", {
+  clean <- simulate_clean(seed = 31)
+  direct <- stats::glm(
+    I(pain_30min > 0) ~ treatment + sex + age + bmi + smoking + asa + surgery_size,
+    family = stats::binomial(),
+    data = clean
+  )
+  fit <- fit_single_timepoint(clean, covariates = adjustment_covariates)
+  expect_equal(unname(stats::coef(fit)), unname(stats::coef(direct)))
+  expect_equal(odds_ratio(fit)$n_obs, sum(!is.na(clean$pain_30min)))
+})
+
+test_that("the adjusted model recovers planted treatment and age effects", {
+  # No patient random effect, so the simulated log ORs are exactly what a
+  # correctly specified single-time-point model estimates.
+  truth <- c(treatment = -0.8, age = 0.3)
+  clean <- simulate_clean(n_patients = 2000, log_or_treatment = truth[["treatment"]],
+                          log_or_age = truth[["age"]], sd_patient = 0, seed = 33)
+  fit <- fit_single_timepoint(clean, covariates = adjustment_covariates)
+  est <- odds_ratio(fit)
+  expect_lt(abs(est$log_or - truth[["treatment"]]), 3 * est$se)
+  # Age is simulated per 10 years; the model's coefficient is per year.
+  age <- odds_ratio(fit, "age")
+  expect_lt(abs(10 * age$log_or - truth[["age"]]), 3 * 10 * age$se)
 })
 
 test_that("odds_ratio matches the textbook 2x2 calculation for a glm", {

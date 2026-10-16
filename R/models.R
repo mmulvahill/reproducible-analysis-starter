@@ -1,13 +1,25 @@
 # Model fitting, effect extraction, and a simulator with known truth.
 
-#' Sanity-check model: logistic regression of any pain at one time point
+#' Logistic regression of any pain at one time point
 #'
-#' Unadjusted, because treatment was randomized (DECISIONS.md D-002).
-fit_single_timepoint <- function(clean, outcome = "pain_30min") {
+#' The primary analysis is unadjusted, because treatment was randomized
+#' (DECISIONS.md D-002). Pass `covariates` for the adjusted sensitivity
+#' analysis; its odds ratio is conditional on them, so it answers a different
+#' question from the unadjusted one.
+#'
+#' @param covariates Character vector of baseline columns to adjust for, e.g.
+#'   `adjustment_covariates`. `NULL` (the default) fits the unadjusted model.
+fit_single_timepoint <- function(clean, outcome = "pain_30min", covariates = NULL) {
   data <- clean[!is.na(clean[[outcome]]), ]
   data$any_pain <- as.integer(data[[outcome]] > 0)
-  stats::glm(any_pain ~ treatment, family = stats::binomial(), data = data)
+  formula <- stats::reformulate(c("treatment", covariates), response = "any_pain")
+  stats::glm(formula, family = stats::binomial(), data = data)
 }
+
+#' Baseline covariates for the adjusted sensitivity analysis, as listed in the
+#' analysis plan (chapters/03-methods.qmd). Chosen before outcomes were
+#' examined, not from Table 1.
+adjustment_covariates <- c("sex", "age", "bmi", "smoking", "asa", "surgery_size")
 
 #' Conditional model: mixed-effects logistic regression over all time points
 #'
@@ -81,7 +93,14 @@ odds_ratio_by_time <- function(fit, treatment_term = "treatmentLicorice") {
 #' Refits the single-time-point model with every missing outcome set to the
 #' value least and most favourable to licorice. If both bounds agree with the
 #' complete-case result, the missing data cannot change the conclusion.
-missing_outcome_bounds <- function(clean, outcome = "pain_30min") {
+#'
+#' @param complete_case The complete-case `odds_ratio()` row. Pass the primary
+#'   result you already have so the same model is not fitted twice.
+missing_outcome_bounds <- function(clean, outcome = "pain_30min",
+                                   complete_case = NULL) {
+  if (is.null(complete_case)) {
+    complete_case <- odds_ratio(fit_single_timepoint(clean, outcome))
+  }
   miss <- is.na(clean[[outcome]])
   scenario <- function(licorice_value, sugar_value) {
     d <- clean
@@ -90,10 +109,15 @@ missing_outcome_bounds <- function(clean, outcome = "pain_30min") {
     odds_ratio(fit_single_timepoint(d, outcome))
   }
   rbind(
-    cbind(scenario = "Complete case", odds_ratio(fit_single_timepoint(clean, outcome))),
+    cbind(scenario = "Complete case", complete_case),
     cbind(scenario = "Best case for licorice", scenario(0, 1)),
     cbind(scenario = "Worst case for licorice", scenario(1, 0))
   )
+}
+
+#' Between-patient standard deviation (log-odds scale) from `fit_repeated()`
+patient_sd <- function(fit) {
+  attr(lme4::VarCorr(fit)$patient_id, "stddev")[[1]]
 }
 
 #' Odds ratio with Wald 95% CI for one coefficient of a glm, glmer or

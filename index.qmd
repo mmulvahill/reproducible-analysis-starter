@@ -3,11 +3,12 @@
 ```{r}
 #| include: false
 source(here::here("chapters", "_setup.R"))
-by30 <- pain_by_group(clean, "pain_30min")
-or30 <- odds_ratio(fit_single_timepoint(clean))
-or_marginal <- odds_ratio(fit_marginal(long))
-by_time <- odds_ratio_by_time(fit_marginal_by_time(long))
-lasts <- all(by_time$upper < 1)
+# Estimates come from scripts/03_fit_models.R, the same ones the chapters use.
+by30 <- results$by30
+or30 <- results$or30
+or_marginal <- results$or_marginal
+by_time <- results$by_time
+lasts <- results$lasts
 ```
 
 **Question.** Does gargling licorice before intubation reduce postoperative
@@ -27,9 +28,10 @@ their confidence intervals excluded one (assuming one common effect,
 **How to read this book.** It is both the lab notebook and the report. The
 *Plan* part was written before the results; the *Results* part follows it;
 the *Record* part holds every analysis decision and the research log. Every
-number in the Plan and Results prose is computed from the data when the book
-renders, so the text cannot drift from the analysis; `make numbers` checks
-this. The decision record and research log are hand-written logs, and say
+number in the Plan and Results prose is computed by code: the models are
+fitted once by `scripts/03_fit_models.R`, and the text formats those
+results when the book renders, so it cannot drift from the analysis;
+`make numbers` checks this. The decision record and research log are hand-written logs, and say
 so.
 
 ::: {.callout-note}
