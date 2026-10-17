@@ -51,8 +51,10 @@ note.
 Open the folder and run `claude`. Claude Code reads `CLAUDE.md`
 automatically. The project also sets up:
 
-- **Skills:** `/log-decision`, `/log-research`, and `/review-analysis` (run
-  the review in a *fresh* session so the reviewer did not write the work).
+- **Skills:** `/draft-plan`, `/review-plan`, `/receive-data`,
+  `/log-decision`, `/log-research` and `/review-analysis`. Both reviews run
+  in a separate subagent that never saw the conversation, so the reviewer
+  did not write the work.
 - **A hook** that runs the typed-number check after every file edit and shows
   Claude any violation.
 - **Permission rules** that block Claude's file tools from editing
@@ -87,7 +89,8 @@ completed worked example, is in the example repo's `WALKTHROUGH.md`.
    plan with you one topic at a time and logs each decision.
    After each call or email with the client, add a note to `notes/`: the
    decision record cites notes, not memory.
-3. In a **fresh session**, run `/review-plan`. Revise, then commit and tag
+3. Run `/review-plan`. It runs in a separate subagent that never saw your
+   conversation, and its findings come back to you. Revise, then commit and tag
    the plan: *"Commit the plan and tag it plan-v1."*
 4. When data arrives, save it in `data/raw/` and run
    `/receive-data data/raw/<file> <where it came from>`.
@@ -97,7 +100,7 @@ completed worked example, is in the example repo's `WALKTHROUGH.md`.
    purpose and show me the test fail."*
 6. *"Fit the planned models in `analysis_results()` and write the results
    chapters."*
-7. In a **fresh session**, run `/review-analysis`. Fix what matters, with a
+7. Run `/review-analysis` (also in its own subagent). Fix what matters, with a
    decision entry for each change to the analysis. Write the summary last.
 8. To publish the book: Settings → Pages → Source: GitHub Actions. The
    Pages site is public even for a private repo on most GitHub plans.
