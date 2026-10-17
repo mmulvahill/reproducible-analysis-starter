@@ -3,8 +3,8 @@
 # data/raw is read-only: this script refuses to run if the raw file's bytes
 # differ from the checksum recorded when it was received.
 #
-# When data arrives: set raw_path (and RAW_DATA in the Makefile), record the
-# MD5 below and in data/raw/README.md, and write the cleaning function in R/.
+# When data arrives, /receive-data sets raw_path (and RAW_DATA in the
+# Makefile) and records the MD5 below and in data/README.md.
 
 pkgload::load_all(here::here(), quiet = TRUE)
 
@@ -25,7 +25,7 @@ if (!identical(actual_md5, expected_md5)) {
 }
 
 raw <- utils::read.csv(raw_path)
-clean <- raw # Replace with the project's cleaning function from R/clean.R.
+clean <- clean_data(raw)
 
 dir.create(here::here("data", "derived"), showWarnings = FALSE)
 saveRDS(clean, here::here("data", "derived", "clean.rds"))

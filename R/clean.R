@@ -1,6 +1,14 @@
 # Raw -> clean. Every recode lives here, never in a chapter.
-# Add the project's cleaning function (raw data frame -> one row per unit)
-# and its validation here, with known-answer tests in tests/testthat/.
+
+#' Clean the raw data: one row per unit, labeled, validated against the
+#' codebook
+#'
+#' A placeholder until the project's cleaning is written, with known-answer
+#' tests. It refuses to run, so uncleaned data never reaches the report.
+clean_data <- function(raw) {
+  stop("clean_data() is not written yet. Write it in R/clean.R, with ",
+       "known-answer tests, before running `make data`.", call. = FALSE)
+}
 
 #' Recode a numeric column to a factor, refusing codes the codebook lacks
 #'

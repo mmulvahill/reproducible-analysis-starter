@@ -80,13 +80,17 @@ Click **Use this template** on GitHub, clone the new repo, open it, and run
 something you say or type. The full script, from an empty repo to the
 completed worked example, is in the example repo's `WALKTHROUGH.md`.
 
-1. *"Rename the package to `<name>` and set the book title and repo URL."*
-2. Paste your intake notes (or save them in `notes/`) and run
-   `/draft-plan`. Claude restates the question, then works through the
+1. *"Rename the package to `<name>`, set the book title and repo URL, and
+   rewrite the README for this project."*
+2. Paste your intake notes (or save them in `notes/`, with any codebook or
+   protocol) and run `/draft-plan`. Claude restates the question, then works through the
    plan with you one topic at a time and logs each decision.
+   After each call or email with the client, add a note to `notes/`: the
+   decision record cites notes, not memory.
 3. In a **fresh session**, run `/review-plan`. Revise, then commit and tag
    the plan: *"Commit the plan and tag it plan-v1."*
-4. When data arrives: `/receive-data <path-to-file> <where it came from>`.
+4. When data arrives, save it in `data/raw/` and run
+   `/receive-data data/raw/<file> <where it came from>`.
    Check your data agreement before committing data to any remote.
 5. *"Write the cleaning function with known-answer tests."* Then, for each
    model: *"Write it with a simulation-recovery test, then break it on
