@@ -75,18 +75,27 @@ once, commit `renv.lock`, and have collaborators run `renv::restore()`.
 
 ## Starting your own project
 
-1. Click **Use this template** on GitHub (or copy the folder).
-2. Rename the package in `DESCRIPTION` and `tests/testthat.R`, and set the
-   book title and `repo-url` in `_quarto.yml`.
-3. When data arrives, save it in `data/raw/`, record its checksum in
-   `data/raw/README.md` and `scripts/02_make_analysis_data.R`, and set
-   `RAW_DATA` in the `Makefile`. Check your data agreement before
-   committing it.
-4. Write the cleaning function in `R/clean.R` and the models in
-   `R/models.R` and `analysis_results()` (`R/results.R`), each with tests.
-5. Write `chapters/01-question.qmd` and `chapters/03-methods.qmd` *before*
-   looking at outcomes.
-6. To publish the book: Settings → Pages → Source: GitHub Actions. The
+Click **Use this template** on GitHub, clone the new repo, open it, and run
+`claude`. Then work through it in conversation; each step below is
+something you say or type. The full script, from an empty repo to the
+completed worked example, is in the example repo's `WALKTHROUGH.md`.
+
+1. *"Rename the package to `<name>` and set the book title and repo URL."*
+2. Paste your intake notes (or save them in `notes/`) and run
+   `/draft-plan`. Claude restates the question, then works through the
+   plan with you one topic at a time and logs each decision.
+3. In a **fresh session**, run `/review-plan`. Revise, then commit and tag
+   the plan: *"Commit the plan and tag it plan-v1."*
+4. When data arrives: `/receive-data <path-to-file> <where it came from>`.
+   Check your data agreement before committing data to any remote.
+5. *"Write the cleaning function with known-answer tests."* Then, for each
+   model: *"Write it with a simulation-recovery test, then break it on
+   purpose and show me the test fail."*
+6. *"Fit the planned models in `analysis_results()` and write the results
+   chapters."*
+7. In a **fresh session**, run `/review-analysis`. Fix what matters, with a
+   decision entry for each change to the analysis. Write the summary last.
+8. To publish the book: Settings → Pages → Source: GitHub Actions. The
    Pages site is public even for a private repo on most GitHub plans.
 
 The example repo has exercises (`EXERCISES.md`) that walk through the
