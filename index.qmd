@@ -20,7 +20,7 @@ reported any sore throat at rest, against
 `r fmt_pct(by30$proportion[by30$group == "Sugar"])` of sugar-water patients
 (`r fmt_or(or30)`; `r fmt_p(or30$p_value)`). `r if (lasts) "The effect lasted:" else "Whether the effect lasted is unclear:"`
 population-averaged odds ratios at the four assessments through the first
-postoperative morning ranged from `r fmt_num(min(by_time$or), 2)` to
+postoperative morning (an analysis added after review, D-009) ranged from `r fmt_num(min(by_time$or), 2)` to
 `r fmt_num(max(by_time$or), 2)`, and `r if (lasts) "all" else "not all"` of
 their confidence intervals excluded one (assuming one common effect,
 `r fmt_or(or_marginal)`).

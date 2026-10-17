@@ -1,30 +1,33 @@
 # Analysis plan
 
-This chapter was written before any outcome was examined. Changes after that
-point are logged in the decision record with a reason.
+This chapter was written before any outcome was examined. Changes made
+after that point are marked where they occur, and each is logged in the
+decision record with its reason and timing.
 
 ## Estimands
 
 | Question | Population | Outcome | Summary measure |
 |---|---|---|---|
 | Primary | All randomized patients with an outcome | Any sore throat at rest, thirty minutes | Odds ratio, licorice vs sugar |
-| Secondary | Same | Any sore throat across the four assessments | Population-averaged odds ratio, common and at each assessment |
+| Secondary | Same | Any sore throat across the four assessments | Population-averaged odds ratio, common to all assessments |
+| Secondary (*added after review*, D-009) | Same | Any sore throat at each assessment | Population-averaged odds ratio at each assessment |
 
 ## Models
 
-1. **First look (sanity check).** Proportions by arm and an unadjusted
-   logistic regression at thirty minutes. Randomization makes this the
-   primary analysis as well (D-002).
+1. **Primary analysis.** Proportions by arm and an unadjusted logistic
+   regression at thirty minutes (D-001, D-002).
 2. **Repeated measures, population-averaged.** Logistic GEE with an
-   exchangeable working correlation and robust standard errors. A common
-   odds ratio across assessments, and a treatment-by-time model for the odds
-   ratio at each assessment (D-003).
+   exchangeable working correlation and robust standard errors, giving one
+   odds ratio common to the four assessments (D-003). *Added after review
+   (D-009):* a treatment-by-time model for the odds ratio at each
+   assessment.
 3. **Repeated measures, patient-level.** Logistic mixed model with a random
-   intercept per patient, fitted by adaptive quadrature. Reported beside the
-   GEE because its odds ratio answers a different question (D-004).
+   intercept per patient. Reported beside the GEE because its odds ratio
+   answers a different question (D-004). *Amended after review (D-008):*
+   fitted by adaptive quadrature rather than the Laplace default.
 4. **Sensitivity.** The primary model adjusted for sex, age, BMI, smoking,
-   ASA status and surgery size. Interpreted as a conditional odds ratio, not
-   a check of the unadjusted one.
+   ASA status and surgery size (D-007). Interpreted as a conditional odds
+   ratio, not a check of the unadjusted one.
 5. **Missing outcomes.** Complete case, with best- and worst-case bounds
    (D-006).
 

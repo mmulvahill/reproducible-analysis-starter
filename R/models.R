@@ -17,8 +17,8 @@ fit_single_timepoint <- function(clean, outcome = "pain_30min", covariates = NUL
 }
 
 #' Baseline covariates for the adjusted sensitivity analysis, as listed in the
-#' analysis plan (chapters/03-methods.qmd). Chosen before outcomes were
-#' examined, not from Table 1.
+#' analysis plan (chapters/03-methods.qmd, DECISIONS.md D-007). Chosen before
+#' outcomes were examined, not from Table 1.
 adjustment_covariates <- c("sex", "age", "bmi", "smoking", "asa", "surgery_size")
 
 #' Conditional model: mixed-effects logistic regression over all time points
@@ -28,7 +28,7 @@ adjustment_covariates <- c("sex", "age", "bmi", "smoking", "asa", "surgery_size"
 #' model to show how the estimand changes the number (DECISIONS.md D-004).
 fit_repeated <- function(long) {
   # Adaptive quadrature, not the Laplace default: with a large patient SD
-  # and four binary observations per patient, Laplace is biased.
+  # and four binary observations per patient, Laplace is biased (D-008).
   lme4::glmer(
     any_pain ~ treatment + time + (1 | patient_id),
     family = stats::binomial(),
@@ -53,7 +53,8 @@ fit_marginal <- function(long) {
 }
 
 #' Population-averaged model with a treatment-by-time interaction, so the
-#' odds ratio can differ at each assessment (does the effect last?).
+#' odds ratio can differ at each assessment (does the effect last?). Added
+#' after review (DECISIONS.md D-009).
 fit_marginal_by_time <- function(long) {
   long <- long[order(long$patient_id, long$time), ]
   geepack::geeglm(

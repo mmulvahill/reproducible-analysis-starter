@@ -1,4 +1,4 @@
-# First look: thirty minutes
+# Primary analysis: thirty minutes
 
 ```{r}
 #| include: false
@@ -9,7 +9,8 @@ or30 <- results$or30
 or_adj <- results$or_adj
 ```
 
-Before fitting anything complex, check the simplest version of the answer.
+The primary question (D-001), analyzed as planned with an unadjusted
+logistic regression (D-002).
 
 ```{r}
 #| label: tbl-30min
@@ -23,9 +24,10 @@ knitr::kable(
 Sore throat at thirty minutes was less common with licorice
 (`r fmt_pct(by30$proportion[by30$group == "Licorice"])` vs
 `r fmt_pct(by30$proportion[by30$group == "Sugar"])`; `r fmt_or(or30)`;
-`r fmt_p(or30$p_value)`). This is the pre-specified primary analysis (D-002).
+`r fmt_p(or30$p_value)`).
 
-**Sensitivity.** Adjusting for baseline covariates gives `r fmt_or(or_adj)`.
+**Sensitivity.** Adjusting for the pre-specified baseline covariates (D-007)
+gives `r fmt_or(or_adj)`.
 This is a conditional odds ratio, so it is expected to sit somewhat further
 from one than the unadjusted estimate even with perfect balance
 (non-collapsibility; Chapter 4). The two agree on direction and size, and

@@ -29,7 +29,9 @@ ggplot2::ggplot(props, ggplot2::aes(time, any_pain, colour = treatment, group = 
 ## Does the effect last?
 
 The odds ratio at each assessment, from a GEE with a treatment-by-time
-interaction (D-003):
+interaction. This analysis was added after the results were seen, when an
+independent review found the client's question unanswered (D-009), so it is
+post hoc and descriptive:
 
 ```{r}
 #| label: tbl-by-time
@@ -62,11 +64,11 @@ The random-intercept model estimates `r fmt_or(or_conditional)`, much further
 from one. This is not a contradiction. The estimated between-patient standard
 deviation on the log-odds scale is `r fmt_num(sd_patient, 2)`, so some
 patients are far more prone to sore throat than others. (Fitted by
-adaptive quadrature; the Laplace default is biased in this setting.) The
-mixed model's
-odds ratio compares the same patient under each gargle; the GEE's compares
-the two populations. The client's question is about populations, so the GEE
-is the reported estimand (D-004).
+adaptive quadrature, a change made after review because the Laplace
+default is biased in this setting; D-008.) The mixed model's odds ratio
+compares the same patient under each gargle; the GEE's compares the two
+populations. The client's question is about populations, so the GEE
+is the reported estimand (D-003, D-004).
 
 ```{r}
 #| echo: false
