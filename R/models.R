@@ -1,13 +1,25 @@
 # Model fitting, effect extraction, and a simulator with known truth.
 
-#' Sanity-check model: logistic regression of any pain at one time point
+#' Logistic regression of any pain at one time point
 #'
-#' Unadjusted, because treatment was randomized (DECISIONS.md D-002).
-fit_single_timepoint <- function(clean, outcome = "pain_30min") {
+#' The primary analysis is unadjusted, because treatment was randomized
+#' (DECISIONS.md D-002). Pass `covariates` for the adjusted sensitivity
+#' analysis; its odds ratio is conditional on them, so it answers a different
+#' question from the unadjusted one.
+#'
+#' @param covariates Character vector of baseline columns to adjust for, e.g.
+#'   `adjustment_covariates`. `NULL` (the default) fits the unadjusted model.
+fit_single_timepoint <- function(clean, outcome = "pain_30min", covariates = NULL) {
   data <- clean[!is.na(clean[[outcome]]), ]
   data$any_pain <- as.integer(data[[outcome]] > 0)
-  stats::glm(any_pain ~ treatment, family = stats::binomial(), data = data)
+  formula <- stats::reformulate(c("treatment", covariates), response = "any_pain")
+  stats::glm(formula, family = stats::binomial(), data = data)
 }
+
+#' Baseline covariates for the adjusted sensitivity analysis, as listed in the
+#' analysis plan (chapters/03-methods.qmd, DECISIONS.md D-007). Chosen before
+#' outcomes were examined, not from Table 1.
+adjustment_covariates <- c("sex", "age", "bmi", "smoking", "asa", "surgery_size")
 
 #' Conditional model: mixed-effects logistic regression over all time points
 #'
@@ -16,7 +28,7 @@ fit_single_timepoint <- function(clean, outcome = "pain_30min") {
 #' model to show how the estimand changes the number (DECISIONS.md D-004).
 fit_repeated <- function(long) {
   # Adaptive quadrature, not the Laplace default: with a large patient SD
-  # and four binary observations per patient, Laplace is biased.
+  # and four binary observations per patient, Laplace is biased (D-008).
   lme4::glmer(
     any_pain ~ treatment + time + (1 | patient_id),
     family = stats::binomial(),
@@ -41,7 +53,8 @@ fit_marginal <- function(long) {
 }
 
 #' Population-averaged model with a treatment-by-time interaction, so the
-#' odds ratio can differ at each assessment (does the effect last?).
+#' odds ratio can differ at each assessment (does the effect last?). Added
+#' after review (DECISIONS.md D-009).
 fit_marginal_by_time <- function(long) {
   long <- long[order(long$patient_id, long$time), ]
   geepack::geeglm(
@@ -81,7 +94,14 @@ odds_ratio_by_time <- function(fit, treatment_term = "treatmentLicorice") {
 #' Refits the single-time-point model with every missing outcome set to the
 #' value least and most favourable to licorice. If both bounds agree with the
 #' complete-case result, the missing data cannot change the conclusion.
-missing_outcome_bounds <- function(clean, outcome = "pain_30min") {
+#'
+#' @param complete_case The complete-case `odds_ratio()` row. Pass the primary
+#'   result you already have so the same model is not fitted twice.
+missing_outcome_bounds <- function(clean, outcome = "pain_30min",
+                                   complete_case = NULL) {
+  if (is.null(complete_case)) {
+    complete_case <- odds_ratio(fit_single_timepoint(clean, outcome))
+  }
   miss <- is.na(clean[[outcome]])
   scenario <- function(licorice_value, sugar_value) {
     d <- clean
@@ -90,10 +110,15 @@ missing_outcome_bounds <- function(clean, outcome = "pain_30min") {
     odds_ratio(fit_single_timepoint(d, outcome))
   }
   rbind(
-    cbind(scenario = "Complete case", odds_ratio(fit_single_timepoint(clean, outcome))),
+    cbind(scenario = "Complete case", complete_case),
     cbind(scenario = "Best case for licorice", scenario(0, 1)),
     cbind(scenario = "Worst case for licorice", scenario(1, 0))
   )
+}
+
+#' Between-patient standard deviation (log-odds scale) from `fit_repeated()`
+patient_sd <- function(fit) {
+  attr(lme4::VarCorr(fit)$patient_id, "stddev")[[1]]
 }
 
 #' Odds ratio with Wald 95% CI for one coefficient of a glm, glmer or

@@ -24,6 +24,9 @@ jobs:
       - name: Build analysis data
         run: make data
 
+      - name: Fit models
+        run: make results
+
       - name: Unit, known-answer and simulation-recovery tests
         run: make test
 
@@ -34,4 +37,4 @@ jobs:
         run: make numbers
 
       - name: Render the book
-        run: quarto render
+        run: make book

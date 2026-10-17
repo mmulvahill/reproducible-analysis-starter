@@ -6,8 +6,9 @@
 #
 # Allowed without inline code: "Table 1", "Figure 2", "Chapter 3",
 # "Section 4", "D-001" decision ids, 4-digit years, and anything inside a
-# markdown link or URL. To allow one line deliberately, end it with
-# <!-- numbers-ok -->.
+# markdown link or URL. A person can allow one line deliberately by ending
+# it with <!-- numbers-ok -->; the error message does not offer this, so an
+# assistant is steered to compute the number instead.
 #
 # Usage: Rscript scripts/check_inline_numbers.R [files...]
 # Default: every .qmd file in the repo root and chapters/.
@@ -60,8 +61,8 @@ for (f in files) {
 }
 
 if (length(problems) > 0) {
-  cat("Typed numbers found in report prose. Compute them with inline R",
-      "(e.g. `r fmt_pct(x)`) or mark the line <!-- numbers-ok -->:\n\n")
+  cat("Typed numbers found in report prose. Compute each one from data or",
+      "results with inline R, e.g. `r fmt_pct(x)`:\n\n")
   cat(problems, sep = "\n")
   quit(status = 1)
 }

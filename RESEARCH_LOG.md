@@ -23,12 +23,14 @@ Strengthened it to recover the patient SD too, and to require a clear gap
 between conditional and marginal estimates. The same swap now fails two tests.
 
 **2026-10-10** Planned models fitted. The mixed model's conditional OR
-(about 0.14) is far from the GEE's marginal OR (about 0.34) because the
-patient random-intercept SD is about 2.75 on the log-odds scale. Expected
-direction, larger gap than anticipated; reported both as planned (D-004).
+(about 0.13) is far from the GEE's marginal OR (about 0.34) because the
+patient random-intercept SD is about 2.7 on the log-odds scale. Expected
+direction, larger gap than anticipated; reported both, labeled, as planned
+(D-003, D-004).
 
-**2026-10-10** Independent review (fresh session) flagged that the Laplace
-approximation can be biased here; switched the mixed model to adaptive
-quadrature (OR moved from about 0.13 to 0.14). It also flagged that the
-client's "does it last?" question was unanswered; added the time-specific
-GEE planned in D-003, and a test that the GEE recovers the true marginal OR.
+**2026-10-10** Independent review in a fresh session, after the results
+above. Two changes, both post hoc: the Laplace approximation is biased with
+a patient SD this large, so the mixed model is now fitted by adaptive
+quadrature (OR about 0.13 to 0.14; D-008); and the client's "does it last?"
+question was unanswered, so the GEE now also gives the odds ratio at each
+assessment (D-009), with a test that the GEE recovers the true marginal OR.

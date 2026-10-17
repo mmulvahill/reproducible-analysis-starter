@@ -17,9 +17,10 @@ randomized trial, so you can see every piece in use before you copy it.
 | Research log | `RESEARCH_LOG.md` | Append-only record of what happened and what it changed |
 | Read-only raw data | `data/raw/` + checksum in `scripts/02_make_analysis_data.R` | Received data is never edited; all cleaning is code |
 | Functions in a package | `R/`, `DESCRIPTION` | One home for every function the report uses |
+| Models fitted once | `scripts/03_fit_models.R`, `R/results.R` | Every estimate is computed in one place and saved; chapters only format it, so the summary and the chapters cannot disagree |
 | Tests | `tests/testthat/` | Known-answer tests on tiny hand-built data; simulation-recovery tests for every model |
 | Lint + pre-commit | `.lintr`, `.pre-commit-config.yaml` | Machines check style so review time goes to substance |
-| CI and publishing | `.github/workflows/` | Every push is checked; the book on GitHub Pages always matches the code |
+| CI and publishing | `.github/workflows/` | Every push to `main` and every pull request is checked; the book on GitHub Pages always matches the code |
 | Instructions for Claude | `CLAUDE.md`, `.claude/` | Your standards, written once, read every session, partly enforced by hooks |
 
 ## Quick start
