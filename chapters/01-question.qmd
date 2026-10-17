@@ -2,38 +2,20 @@
 
 ## What the client asked
 
-> We ran a randomized trial of a licorice gargle before intubation for
-> thoracic surgery. Did it reduce sore throat afterwards? We would like an
-> answer we can put in a manuscript, and we want to know whether the effect
-> lasts past the recovery room.
+> The client's question, in their words.
 
 ## How we restated it
 
-- **Primary question.** Is the proportion of patients with any sore throat at
-  rest thirty minutes after arrival in the recovery unit lower with licorice
-  than with sugar water?
-- **Secondary question.** Averaged over the four post-operative assessments
-  (thirty and ninety minutes in recovery, four hours after surgery, and the
-  first post-operative morning), are the odds of sore throat lower with
-  licorice?
+- **Primary question.** Population, intervention or exposure, comparison,
+  outcome, and when it is measured.
+- **Secondary questions.**
 
-Both restatements were confirmed with the client before analysis began
-(D-001, D-003). The second does not answer the client's question about
-whether the effect lasts; an independent review caught this after the
-results were in (D-009).
+Confirm each restatement with the client before analysis begins and log it
+in the decision record.
 
 ## Open questions
 
 Questions we could not answer from the data alone. Each is resolved here or
 logged in the decision record.
 
-- [x] Is "any pain" (score above zero) clinically meaningful, or should we
-  use a threshold? *Client: any pain is their stated primary outcome (D-001).*
-- [x] Should the primary analysis adjust for baseline covariates?
-  *No; adjusted model is a sensitivity analysis (D-002).*
-- [x] Does the effect last past the recovery room? *Not answered by the
-  plan's common odds ratio; odds ratios at each assessment added after
-  review (D-009).*
-- [ ] The study enrolled one more patient than the public dataset contains.
-  Were any patients excluded after randomization, and why?
-- [ ] Is swallowing pain of interest as a separate outcome?
+- [ ]

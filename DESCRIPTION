@@ -1,5 +1,5 @@
-Package: licorice
-Title: Worked Example: Licorice Gargle Trial Reanalysis
+Package: analysis
+Title: Project Functions for a Reproducible Analysis
 Version: 0.1.0
 Authors@R: person("Matt", "Mulvahill", role = c("aut", "cre"))
 Description: Project functions for a reproducible statistical consulting
@@ -9,11 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1)
 Imports:
-    geepack,
-    lme4,
-    stats,
-    tidyr,
-    withr
+    stats
 Suggests:
     ggplot2,
     here,

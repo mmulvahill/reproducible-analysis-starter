@@ -36,18 +36,3 @@ table_one <- function(data, by, vars, digits = 1) {
   rownames(out) <- NULL
   out
 }
-
-#' Proportion with any pain, by group
-pain_by_group <- function(data, outcome, by = "treatment") {
-  keep <- !is.na(data[[outcome]])
-  groups <- levels(factor(data[[by]]))
-  data.frame(
-    group = groups,
-    n = vapply(groups, function(g) sum(keep & data[[by]] == g), integer(1)),
-    events = vapply(groups, function(g) {
-      sum(data[[outcome]][keep & data[[by]] == g] > 0)
-    }, integer(1)),
-    row.names = NULL
-  ) |>
-    transform(proportion = events / n)
-}

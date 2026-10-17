@@ -2,10 +2,13 @@
 
 A project template for statistical consulting work that stays
 reproducible and checkable when an AI assistant writes much of the code.
-It ships with a complete worked example, a reanalysis of a public
-randomized trial, so you can see every piece in use before you copy it.
+This repo is the empty starting point. To see every piece in use first,
+look at the completed worked example, a reanalysis of a public randomized
+trial:
 
-**Rendered example report:** https://mmulvahill.github.io/reproducible-analysis-starter/
+- **Example repo:** [licorice-gargle-example](https://github.com/mmulvahill/licorice-gargle-example)
+  (also on this repo's [`example`](https://github.com/mmulvahill/reproducible-analysis-starter/tree/example) branch)
+- **Example report:** https://mmulvahill.github.io/licorice-gargle-example/
 
 ## What is in it
 
@@ -29,8 +32,8 @@ You need R (4.1 or later), [Quarto](https://quarto.org/docs/get-started/),
 and the packages listed in `DESCRIPTION`:
 
 ```r
-install.packages(c("geepack", "lme4", "tidyr", "withr", "ggplot2", "here",
-                   "knitr", "lintr", "pkgload", "rmarkdown", "testthat"))
+install.packages(c("ggplot2", "here", "knitr", "lintr", "pkgload",
+                   "rmarkdown", "testthat"))
 ```
 
 Then, from the repo root:
@@ -39,7 +42,9 @@ Then, from the repo root:
 make all            # or, without make (e.g. Windows): Rscript run_all.R
 ```
 
-Open `_book/index.html`.
+Open `_book/index.html`. Until data arrives, `make data` and
+`make results` skip, and the book renders the plan with an "Awaiting data"
+note.
 
 ## Using it with Claude Code
 
@@ -64,28 +69,28 @@ patient data into a personal account.**
 
 ## Pinning package versions
 
-`chapters/10-reproducibility.qmd` records `sessionInfo()`, which says what
+`chapters/09-reproducibility.qmd` records `sessionInfo()`, which says what
 was used but cannot restore it. For your own project, run `renv::init()`
 once, commit `renv.lock`, and have collaborators run `renv::restore()`.
 
 ## Starting your own project
 
 1. Click **Use this template** on GitHub (or copy the folder).
-2. Replace `data/raw/` with your data and record its checksum.
-3. Rename the package in `DESCRIPTION` and replace the functions in `R/`
-   and their tests.
-4. Rewrite `chapters/01-question.qmd` and `chapters/03-methods.qmd` *before*
-   looking at outcomes. Clear `DECISIONS.md` and `RESEARCH_LOG.md`.
-5. To publish the book: Settings → Pages → Source: GitHub Actions.
+2. Rename the package in `DESCRIPTION` and `tests/testthat.R`, and set the
+   book title and `repo-url` in `_quarto.yml`.
+3. When data arrives, save it in `data/raw/`, record its checksum in
+   `data/raw/README.md` and `scripts/02_make_analysis_data.R`, and set
+   `RAW_DATA` in the `Makefile`. Check your data agreement before
+   committing it.
+4. Write the cleaning function in `R/clean.R` and the models in
+   `R/models.R` and `analysis_results()` (`R/results.R`), each with tests.
+5. Write `chapters/01-question.qmd` and `chapters/03-methods.qmd` *before*
+   looking at outcomes.
+6. To publish the book: Settings → Pages → Source: GitHub Actions. The
+   Pages site is public even for a private repo on most GitHub plans.
 
-Try the exercises in [EXERCISES.md](EXERCISES.md) first.
-
-## Data
-
-The worked example uses the licorice gargle trial (Ruetzler et al.,
-*Anesth Analg* 2013;117:614–21) as distributed in the
-[`medicaldata`](https://github.com/higgi13425/medicaldata) R package (MIT
-license), contributed by Amy S. Nowacki. The "client" is fictional.
+The example repo has exercises (`EXERCISES.md`) that walk through the
+workflow.
 
 ## License
 

@@ -6,8 +6,8 @@ analyst alike.
 
 ## What this project is
 
-A statistical consulting analysis (worked example: the licorice gargle
-trial). The Quarto book is both the lab notebook and the client report.
+A statistical consulting analysis. The Quarto book is both the lab notebook
+and the client report.
 
 ```
 data/raw/        received data. READ-ONLY. Never edit, never overwrite.

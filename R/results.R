@@ -7,46 +7,16 @@
 
 #' Fit every model and compute every estimate the report uses
 #'
-#' @param clean One row per patient, from `clean_licorice()`.
-#' @param long One row per patient-time, from `to_long()`.
-#' @return A named list of estimates (data frames and single values), plus
-#'   `models` (the label of every fit) and `warnings` (one row per warning
-#'   raised while fitting, by model).
-analysis_results <- function(clean, long) {
+#' Wrap each fit in `fits$record("Label", ...)` so its warnings reach the
+#' report (see `fit_warnings_note()`), and add each estimate to the list.
+#'
+#' @param clean The analysis data, from `scripts/02_make_analysis_data.R`.
+#' @return A named list of estimates, plus `models` (the label of every fit)
+#'   and `warnings` (one row per warning raised while fitting, by model).
+analysis_results <- function(clean) {
   fits <- new_warning_log()
 
-  # Thirty minutes (Chapter 6, summary)
-  by30 <- pain_by_group(clean, "pain_30min")
-  or30 <- fits$record("Primary (30 min)", odds_ratio(fit_single_timepoint(clean)))
-  or_adj <- fits$record(
-    "Adjusted sensitivity (30 min)",
-    odds_ratio(fit_single_timepoint(clean, covariates = adjustment_covariates))
-  )
-
-  # Missing outcomes (Chapter 2)
-  bounds <- fits$record(
-    "Missing-outcome bounds",
-    missing_outcome_bounds(clean, complete_case = or30)
-  )
-
-  # All four assessments (Chapter 7, summary)
-  or_marginal <- fits$record("GEE, common OR", odds_ratio(fit_marginal(long)))
-  by_time <- fits$record(
-    "GEE, OR at each assessment",
-    odds_ratio_by_time(fit_marginal_by_time(long))
-  )
-  fit_glmm <- fits$record("Mixed model", fit_repeated(long))
-
   list(
-    by30 = by30,
-    or30 = or30,
-    or_adj = or_adj,
-    bounds = bounds,
-    or_marginal = or_marginal,
-    by_time = by_time,
-    lasts = all(by_time$upper < 1),
-    or_conditional = odds_ratio(fit_glmm),
-    sd_patient = patient_sd(fit_glmm),
     models = fits$models(),
     warnings = fits$table()
   )

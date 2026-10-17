@@ -10,9 +10,8 @@ pkgload::load_all(here::here(), quiet = TRUE)
 
 derived <- here::here("data", "derived")
 clean <- readRDS(file.path(derived, "clean.rds"))
-long <- readRDS(file.path(derived, "long.rds"))
 
-results <- analysis_results(clean, long)
+results <- analysis_results(clean)
 saveRDS(results, file.path(derived, "results.rds"))
 
 message(sprintf(

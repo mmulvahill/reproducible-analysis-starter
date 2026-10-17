@@ -3,19 +3,13 @@
 ```{r}
 #| include: false
 source(here::here("chapters", "_setup.R"))
-raw_md5 <- unname(tools::md5sum(here::here("data", "raw", "licorice_gargle.csv")))
-n_missing <- sum(is.na(clean$pain_30min))
-bounds <- results$bounds
-worst <- bounds[bounds$scenario == "Worst case for licorice", ]
-robust <- all(bounds$upper < 1)
 ```
 
 ## Source
 
-The raw file `data/raw/licorice_gargle.csv` was exported once from the
-`medicaldata` R package (see `scripts/01_get_raw_data.R`) and is never edited.
-Its MD5 checksum is `r raw_md5`; `scripts/02_make_analysis_data.R` refuses to
-run if the bytes change (D-005).
+Where the raw data came from, when it was received, and its checksum (see
+`data/raw/README.md`). The raw file is never edited;
+`scripts/02_make_analysis_data.R` refuses to run if its bytes change.
 
 ## Lineage
 
@@ -23,44 +17,10 @@ Each step is a function in `R/` with tests in `tests/testthat/`.
 
 ```{r}
 #| echo: false
+#| eval: !expr has_data
 knitr::kable(lineage, col.names = c("Step", "Rows", "File"))
 ```
 
-- **raw → clean** (`clean_licorice()`): recode numeric codes to labeled
-  factors using the codebook, rename pain variables, and validate ranges.
-  An unexpected code stops the pipeline instead of silently becoming `NA`.
-- **clean → long** (`to_long()`): one row per patient per assessment, with
-  `any_pain` defined as a pain score above zero. Missing scores are dropped.
-
 ## Missing data
 
-The public dataset has `r nrow(clean)` patients; the study enrolled one more
-(see the open questions in Chapter 1). Of those in the file, `r n_missing`
-have no post-operative outcomes at any time point, one in each arm. They are
-excluded from outcome analyses (complete case; D-006) and remain in the
-baseline description.
-
-Could they change the primary result? Setting both missing outcomes to the
-values least and most favourable to licorice gives:
-
-```{r}
-#| label: tbl-missing-bounds
-#| tbl-cap: "Primary odds ratio: complete case and extreme assumptions about missing outcomes."
-knitr::kable(
-  data.frame(
-    Scenario = bounds$scenario,
-    `Odds ratio (95% CI)` = fmt_or_cell(bounds$or, bounds$lower, bounds$upper),
-    `p-value` = fmt_p(bounds$p_value),
-    check.names = FALSE
-  )
-)
-```
-
-The worst case for licorice gives `r fmt_or(worst)`, so the missing
-outcomes `r if (robust) "cannot change" else "could change"` the conclusion.
-
-```{r}
-#| echo: false
-#| results: asis
-fit_warnings_note(results, "Missing-outcome bounds")
-```
+How much is missing, where, and how it is handled (with a decision entry).

@@ -3,8 +3,7 @@ project:
   output-dir: _book
 
 book:
-  title: "Licorice Gargle Trial: Analysis Notebook and Report"
-  subtitle: "Worked example from reproducible-analysis-starter"
+  title: "Study Title: Analysis Notebook and Report"
   author: "Matt Mulvahill"
   date: today
   repo-url: https://github.com/mmulvahill/reproducible-analysis-starter
@@ -20,13 +19,12 @@ book:
     - part: "Results"
       chapters:
         - chapters/05-describe.qmd
-        - chapters/06-first-look.qmd
-        - chapters/07-repeated.qmd
+        - chapters/06-primary.qmd
     - part: "Record"
       chapters:
-        - chapters/08-decisions.qmd
-        - chapters/09-research-log.qmd
-        - chapters/10-reproducibility.qmd
+        - chapters/07-decisions.qmd
+        - chapters/08-research-log.qmd
+        - chapters/09-reproducibility.qmd
 
 format:
   html:
